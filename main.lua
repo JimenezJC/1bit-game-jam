@@ -1,11 +1,21 @@
+require "src.scene"
+
+local scene
+
 function love.load()
-    -- Initialize variables here
+    scene = Scene.new()
 end
 
 function love.update(dt)
-    -- Update game logic here
+    scene:update(dt)
 end
 
 function love.draw()
-    love.graphics.print("High Noon!", 400, 300)
+    scene:draw()
+end
+
+function love.mousepressed(x, y, button)
+    if button == 1 then
+        scene.noon:react()
+    end
 end
