@@ -16,6 +16,12 @@ end
 
 function love.mousepressed(x, y, button)
     if button == 1 then
-        scene.noon:react()
+        scene:react()
+    end
+end
+
+function love.keypressed(key)
+    if key == "r" then
+        scene:retry()
     end
 end

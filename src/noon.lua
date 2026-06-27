@@ -7,7 +7,6 @@ function Noon.new(reaction_window, time_till_noon)
     self.time_till_noon = time_till_noon
     self.state = "countdown"
     self.reaction_elapsed = 0
-    self.result = nil
     return self
 end
 
@@ -22,7 +21,6 @@ function Noon:update(dt)
         self.reaction_elapsed = self.reaction_elapsed + dt
         if self.reaction_elapsed >= self.reaction_window then
             self.state = "missed"
-            self.result = "miss"
         end
     end
 end
@@ -30,11 +28,9 @@ end
 function Noon:react()
     if self.state == "reaction" then
         self.state = "hit"
-        self.result = "hit"
         return "hit"
     elseif self.state == "countdown" then
         self.state = "missed"
-        self.result = "miss"
         return "miss"
     end
     return nil
@@ -58,7 +54,5 @@ function Noon:draw()
         love.graphics.print(math.ceil(self.time_till_noon), 384, 288)
     elseif self.state == "reaction" then
         love.graphics.print("react", 384, 288)
-    elseif self.result then
-        love.graphics.print(self.result, 384, 288)
     end
 end
