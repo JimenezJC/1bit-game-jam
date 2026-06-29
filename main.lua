@@ -6,7 +6,7 @@ local push = require "lib.push"
 
 function love.load()
     scene = Scene.new()
-    font = love.graphics.newFont("assets/fonts/digi.ttf")
+    font = love.graphics.newFont("assets/fonts/digi.ttf",8)
     love.graphics.setFont(font)
 
     --setup aliasing

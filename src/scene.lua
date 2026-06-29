@@ -23,12 +23,12 @@ function Scene:reset()
   self.showing_hit = false
 
   self.player = ThreeMmie.new()
-  self.player.x = 200
-  self.player.y = 288
+  self.player.x = 20
+  self.player.y = 94
 
   self.enemy = Enemy.new("assets/enemy3 shootout")
-  self.enemy.x = 550
-  self.enemy.y = 288
+  self.enemy.x = 190
+  self.enemy.y = 75
 
   -- background sprites - sun, foreground, background
   self.sun = love.graphics.newImage("assets/sun.png")
@@ -103,20 +103,20 @@ end
 
 function Scene:draw()
   if self.game_over then
-    love.graphics.print("game over", 384, 150)
+    love.graphics.printf({"game over",{0,0,0,0}}, 28, 50,200,"center")
   elseif self.win then
-    love.graphics.print("you win", 384, 150)
+    love.graphics.printf({"you win",{0,0,0,0}}, 28, 50,200,"center")
   else
     --draw background layers - foreground, background, sun
     love.graphics.draw(self.background, 0,0)
     love.graphics.draw(self.foreground, 0,0)
-    love.graphics.draw(self.sun, 50,50)
+    love.graphics.draw(self.sun, 100,50)
 
     self.player:draw()
     self.enemy:draw()
     self.noon:draw()
     if self.result then
-      love.graphics.print(self.result, 384, 150)
+      love.graphics.printf({self.result,{0,0,0,0}}, 128, 50,20,"center")
     end
   end
 end
