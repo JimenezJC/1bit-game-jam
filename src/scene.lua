@@ -5,6 +5,10 @@ require "src.enemy"
 Scene = {}
 Scene.__index = Scene
 
+-- invert colors shader
+-- thanks to DarkSysL on Reddit
+shader_invert = love.graphics.newShader[[ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords) { vec4 col = texture2D( texture, texture_coords ); return vec4(1-col.r, 1-col.g, 1-col.b, col.a); } ]]
+
 function Scene.new()
   local self = setmetatable({}, Scene)
   self:reset()
@@ -111,6 +115,10 @@ function Scene:draw()
   elseif self.win then
     love.graphics.printf({"you win",{0,0,0,0}}, 28, 50,200,"center")
   else
+    --showing miss or hit, invert!
+    if self.showing_hit or self.showing_miss then
+      love.graphics.setShader(shader_invert)
+    end
     --draw background layers - foreground, background, sun
     love.graphics.draw(self.background, 0,0)
     love.graphics.draw(self.sun, 100,math.ceil(self.noon.time_till_noon)+69)
