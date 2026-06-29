@@ -12,13 +12,13 @@ end
 
 function Noon:update(dt)
   if self.state == "countdown" then
-    self.time_till_noon = self.time_till_noon - dt
+    self.time_till_noon = self.time_till_noon - (1*dt)
     if self.time_till_noon <= 0 then
       self.state = "reaction"
       self.time_till_noon = 0
     end
   elseif self.state == "reaction" then
-    self.reaction_elapsed = self.reaction_elapsed + dt
+    self.reaction_elapsed = self.reaction_elapsed + (1*dt)
     if self.reaction_elapsed >= self.reaction_window then
       self.state = "missed"
     end

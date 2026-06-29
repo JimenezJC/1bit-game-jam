@@ -109,8 +109,9 @@ function Scene:draw()
   else
     --draw background layers - foreground, background, sun
     love.graphics.draw(self.background, 0,0)
+    love.graphics.draw(self.sun, 100,math.ceil(self.noon.time_till_noon)+69)
     love.graphics.draw(self.foreground, 0,0)
-    love.graphics.draw(self.sun, 100,50)
+    
 
     self.player:draw()
     self.enemy:draw()
