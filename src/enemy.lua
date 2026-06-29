@@ -11,7 +11,9 @@ function Enemy.new(folder_path)
     self.folder_path = folder_path
     
     self.images = {
-        idle = love.graphics.newImage(folder_path .. "/enemy3-idle.png")
+        idle = love.graphics.newImage(folder_path .. "/enemy3-idle.png"),
+        killed = love.graphics.newImage(folder_path .. "/enemy3-killed/enemy3-killed.png")
+
     }
     self.animations = {
         shooting = PlayAnimation.new(folder_path .. "/enemy3-shot-fired frames", 0.1, false)
@@ -39,4 +41,8 @@ end
 
 function Enemy:set_shooting()
     self.state = "shooting"
+end
+
+function Enemy:set_killed()
+    self.state = "killed"
 end

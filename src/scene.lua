@@ -24,7 +24,7 @@ function Scene:reset()
 
   self.player = ThreeMmie.new()
   self.player.x = 20
-  self.player.y = 94
+  self.player.y = 101
 
   self.enemy = Enemy.new("assets/enemy3 shootout")
   self.enemy.x = 190
@@ -74,6 +74,7 @@ function Scene:check_missed()
     self.showing_miss = true
     self.miss_timer = 0
     self.enemy:set_shooting()
+    self.player:set_killed()
   end
 end
 
@@ -87,10 +88,13 @@ function Scene:react()
       self.showing_miss = true
       self.miss_timer = 0
       self.enemy:set_shooting()
+      self.player:set_killed()
+
     elseif result == "hit" then
       self.showing_hit = true
       self.hit_timer = 0
       self.player:set_shooting()
+      self.enemy:set_killed()
     end
   end
 end
