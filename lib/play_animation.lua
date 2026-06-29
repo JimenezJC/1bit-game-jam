@@ -1,12 +1,14 @@
 PlayAnimation = {}
 PlayAnimation.__index = PlayAnimation
 
-function PlayAnimation.new(folder_path, frame_duration)
+function PlayAnimation.new(folder_path, frame_duration, loop)
   local self = setmetatable({}, PlayAnimation)
   self.frames = {}
   self.current_frame = 1
   self.frame_timer = 0
   self.frame_duration = frame_duration or 0.1
+  self.loop = loop ~= false
+  self.finished = false
 
   local files = love.filesystem.getDirectoryItems(folder_path)
   table.sort(files)
@@ -22,16 +24,25 @@ function PlayAnimation.new(folder_path, frame_duration)
 end
 
 function PlayAnimation:update(dt)
-  if #self.frames == 0 then return end
+  if #self.frames == 0 or self.finished then return end
 
   self.frame_timer = self.frame_timer + dt
   if self.frame_timer >= self.frame_duration then
     self.frame_timer = self.frame_timer - self.frame_duration
     self.current_frame = self.current_frame + 1
     if self.current_frame > #self.frames then
-      self.current_frame = 1
+      if self.loop then
+        self.current_frame = 1
+      else
+        self.current_frame = #self.frames
+        self.finished = true
+      end
     end
   end
+end
+
+function PlayAnimation:is_finished()
+  return self.finished
 end
 
 function PlayAnimation:draw(x, y)

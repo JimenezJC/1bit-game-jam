@@ -50,8 +50,8 @@ end
 
 function Noon:draw()
   if self.state == "countdown" then
-    love.graphics.print(math.ceil(self.time_till_noon), 384, 288)
+    love.graphics.print(math.ceil(self.time_till_noon), 384, 150)
   elseif self.state == "reaction" then
-    love.graphics.print("react", 384, 288)
+    love.graphics.print("react", 384, 150)
   end
 end
