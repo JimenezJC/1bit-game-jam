@@ -30,9 +30,9 @@ function Scene:reset()
   self.player.x = 20
   self.player.y = 101
 
-  self.enemy = Enemy.new("assets/enemy3 shootout")
+  self.enemy = Enemy.new("assets/enemy1 shootout")
   self.enemy.x = 190
-  self.enemy.y = 75
+  self.enemy.y = 90
 
   -- background sprites - sun, foreground, background
   self.sun = love.graphics.newImage("assets/sun.png")
