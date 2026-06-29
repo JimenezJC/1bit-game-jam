@@ -4,6 +4,8 @@ local scene
 
 function love.load()
     scene = Scene.new()
+    font = love.graphics.newFont("assets/fonts/digi.ttf")
+    love.graphics.setFont(font)
 end
 
 function love.update(dt)
