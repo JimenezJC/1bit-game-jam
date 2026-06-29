@@ -12,6 +12,7 @@ function Scene.new()
 end
 
 function Scene:reset()
+  --TODO: three scenes, need a variable to 'set' which scene we're in? (Earth, Space, Hell)
   self.noon = Noon.new(1.0, 5.0)
   self.result = nil
   self.game_over = false
@@ -28,6 +29,11 @@ function Scene:reset()
   self.enemy = Enemy.new("assets/enemy3 shootout")
   self.enemy.x = 550
   self.enemy.y = 288
+
+  -- background sprites - sun, foreground, background
+  self.sun = love.graphics.newImage("assets/sun.png")
+  self.foreground = love.graphics.newImage("assets/foreground.png")
+  self.background = love.graphics.newImage("assets/background.png")
 end
 
 function Scene:update(dt)
@@ -101,6 +107,11 @@ function Scene:draw()
   elseif self.win then
     love.graphics.print("you win", 384, 150)
   else
+    --draw background layers - foreground, background, sun
+    love.graphics.draw(self.background, 0,0)
+    love.graphics.draw(self.foreground, 0,0)
+    love.graphics.draw(self.sun, 50,50)
+
     self.player:draw()
     self.enemy:draw()
     self.noon:draw()
