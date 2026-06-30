@@ -1,6 +1,7 @@
 require "src.noon"
 require "src.3mmie"
 require "src.enemy"
+require "src.bullet"
 
 Scene = {}
 Scene.__index = Scene
@@ -26,6 +27,7 @@ function Scene:reset()
   self.hit_timer = 0
   self.showing_hit = false
 
+  -- setting positions
   self.player = ThreeMmie.new()
   self.player.x = 20
   self.player.y = 101
@@ -33,6 +35,10 @@ function Scene:reset()
   self.enemy = Enemy.new("assets/enemy1 shootout")
   self.enemy.x = 190
   self.enemy.y = 90
+
+  self.bullet = Bullet.new()
+  self.bullet.x = 0
+  self.bullet.y = 0
 
   -- background sprites - sun, foreground, background
   self.sun = love.graphics.newImage("assets/sun.png")
@@ -43,6 +49,7 @@ end
 function Scene:update(dt)
   self.player:update(dt)
   self.enemy:update(dt)
+  self.bullet:update(dt)
 
   if self:handle_miss_timer(dt) then return end
   if self:handle_hit_timer(dt) then return end
@@ -79,6 +86,7 @@ function Scene:check_missed()
     self.miss_timer = 0
     self.enemy:set_shooting()
     self.player:set_killed()
+
   end
 end
 
@@ -94,11 +102,27 @@ function Scene:react()
       self.enemy:set_shooting()
       self.player:set_killed()
 
+      --mirror bullet
+      self.bullet:changeDirection("left")
+
+      --draw bullet
+      self.bullet:set_shooting()
+
+      --height offset for bullet
+      self.bullet.y = 3
+
+      
+
     elseif result == "hit" then
       self.showing_hit = true
       self.hit_timer = 0
       self.player:set_shooting()
       self.enemy:set_killed()
+      self.bullet:set_shooting()
+
+      --height offset for bullet
+      self.bullet.y = -2
+
     end
   end
 end
@@ -124,7 +148,10 @@ function Scene:draw()
     love.graphics.draw(self.sun, 100,math.ceil(self.noon.time_till_noon)+69)
     love.graphics.draw(self.foreground, 0,0)
     
-
+    --draw bullet behind player/enemies
+    if self.showing_hit or self.showing_miss then
+      self.bullet:draw()
+    end
     self.player:draw()
     self.enemy:draw()
     self.noon:draw()

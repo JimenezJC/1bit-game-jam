@@ -49,3 +49,9 @@ function PlayAnimation:draw(x, y)
   if #self.frames == 0 then return end
   love.graphics.draw(self.frames[self.current_frame], x, y)
 end
+
+function PlayAnimation:drawMirrored(x, y)
+  if #self.frames == 0 then return end
+  love.graphics.draw(self.frames[self.current_frame], x, y, 0, -1, 1)
+end
+
