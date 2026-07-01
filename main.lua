@@ -68,5 +68,9 @@ function love.keypressed(key)
         if key == "r" then
             scene:retry()
         end
+    elseif Gamestate.current() == menu then
+        if key == "return" then
+            mainMenu:react()
+        end
     end
 end
