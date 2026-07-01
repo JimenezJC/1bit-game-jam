@@ -44,6 +44,9 @@ end
 --TODO: menu state functions!!
 function menu:update(dt)
     mainMenu:update(dt)
+    if mainMenu.slide == 3 then
+        Gamestate.switch(game)
+    end
 end
 
 function menu:draw()

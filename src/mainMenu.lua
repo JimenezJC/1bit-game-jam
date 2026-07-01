@@ -42,7 +42,7 @@ function MainMenu:draw()
     self.returnButtonAnim:draw(224,160)
   elseif self.slide == 2 then
     love.graphics.printf("when the sun fully rises from the horizon, click mouse 1 to draw and shoot!", 28,50, 200, "center")
-    love.graphics.printf("make sure you don't draw too early!",28, 75, 200, "center")
+    love.graphics.printf("make sure you don't draw too early!",28, 85, 200, "center")
     self.returnButtonAnim:draw(224,160)
   end
   
