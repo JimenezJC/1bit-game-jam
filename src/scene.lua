@@ -2,6 +2,8 @@ require "src.noon"
 require "src.3mmie"
 require "src.enemy"
 require "src.bullet"
+require "src.distraction"
+local stages = require "src.stages"
 
 Scene = {}
 Scene.__index = Scene
@@ -12,13 +14,16 @@ shader_invert = love.graphics.newShader[[ vec4 effect(vec4 color, Image texture,
 
 function Scene.new()
   local self = setmetatable({}, Scene)
+  self.current_stage = 1
   self:reset()
   return self
 end
 
 function Scene:reset()
-  --TODO: three scenes, need a variable to 'set' which scene we're in? (Earth, Space, Hell)
-  self.noon = Noon.new(1.0, 5.0)
+  local config = stages[self.current_stage]
+
+  local noon_time = love.math.random(config.noon.time_till_noon_min, config.noon.time_till_noon_max)
+  self.noon = Noon.new(config.noon.reaction_window, noon_time)
   self.result = nil
   self.game_over = false
   self.miss_timer = 0
@@ -27,23 +32,24 @@ function Scene:reset()
   self.hit_timer = 0
   self.showing_hit = false
 
-  -- setting positions
   self.player = ThreeMmie.new()
-  self.player.x = 20
-  self.player.y = 101
+  self.player.x = config.player.x
+  self.player.y = config.player.y
 
-  self.enemy = Enemy.new("assets/enemy1 shootout")
-  self.enemy.x = 190
-  self.enemy.y = 90
+  self.enemy = Enemy.new(config.enemy.folder_path)
+  self.enemy.x = config.enemy.x
+  self.enemy.y = config.enemy.y
 
   self.bullet = Bullet.new()
-  self.bullet.x = 0
-  self.bullet.y = 0
+  self.bullet.x = config.bullet.x
+  self.bullet.y = config.bullet.y
 
-  -- background sprites - sun, foreground, background
-  self.sun = love.graphics.newImage("assets/sun.png")
-  self.foreground = love.graphics.newImage("assets/foreground.png")
-  self.background = love.graphics.newImage("assets/background.png")
+  self.distractions = {}
+  self.distraction_timer = 0
+
+  self.sun = love.graphics.newImage(config.sprites.sun)
+  self.foreground = love.graphics.newImage(config.sprites.foreground)
+  self.background = love.graphics.newImage(config.sprites.background)
 end
 
 function Scene:update(dt)
@@ -51,12 +57,36 @@ function Scene:update(dt)
   self.enemy:update(dt)
   self.bullet:update(dt)
 
+  -- Check if distractions exist, update if active and delete if finished
+  for i = #self.distractions, 1, -1 do
+    self.distractions[i]:update(dt)
+    if self.distractions[i]:is_finished() then
+      table.remove(self.distractions, i)
+    end
+  end
+
   if self:handle_miss_timer(dt) then return end
   if self:handle_hit_timer(dt) then return end
   if self.game_over or self.win then return end
 
   self.noon:update(dt)
   self:check_missed()
+
+  -- Spawn a distraction as long as it isn't noon
+  local config = stages[self.current_stage]
+  if self.noon.state ~= "reaction" and #config.distractions > 0 then
+    self.distraction_timer = self.distraction_timer + dt
+    if self.distraction_timer >= config.distraction_interval then
+      self.distraction_timer = 0
+      local distraction_config = config.distractions[love.math.random(#config.distractions)]
+      self:spawn_distraction(
+        distraction_config.folder_path,
+        distraction_config.x,
+        distraction_config.y,
+        distraction_config.frame_duration
+      )
+    end
+  end
 end
 
 function Scene:handle_miss_timer(dt)
@@ -127,6 +157,11 @@ function Scene:react()
   end
 end
 
+-- Function that spawns a distraction
+function Scene:spawn_distraction(folder_path, x, y, frame_duration)
+  table.insert(self.distractions, Distraction.new(folder_path, x, y, frame_duration))
+end
+
 function Scene:retry()
   if self.game_over or self.win then
     self:reset()
@@ -155,6 +190,9 @@ function Scene:draw()
     self.player:draw()
     self.enemy:draw()
     self.noon:draw()
+      for _, distraction in ipairs(self.distractions) do
+      distraction:draw()
+    end
     if self.result then
       love.graphics.printf({self.result,{0,0,0,0}}, 128, 50,20,"center")
     end
